@@ -32,11 +32,24 @@ export function useAttachments() {
     return hasAttachmentsEnabled.value;
   });
 
+  const isAudioRecordingSupported =
+    typeof window !== 'undefined' &&
+    !!navigator.mediaDevices?.getUserMedia &&
+    typeof window.MediaRecorder !== 'undefined';
+
+  const canTranscribeAudio = computed(
+    () =>
+      (window.chatwootWebChannel?.audioTranscriptionEnabled &&
+        isAudioRecordingSupported) ||
+      false
+  );
+
   return {
     shouldShowFilePicker,
     shouldShowEmojiPicker,
     hasAttachmentsEnabled,
     hasEmojiPickerEnabled,
     canHandleAttachments,
+    canTranscribeAudio,
   };
 }
