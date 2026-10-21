@@ -15,3 +15,5 @@ vendor/bundle
 .DS_Store
 *.swp
 *~
+# Local Codex worktrees are full repo checkouts; keep them out of the image
+.codex
