@@ -75,6 +75,16 @@ RSpec.describe '/api/v1/widget/transcription', type: :request do
         expect(Messages::WidgetAudioTranscriptionService).not_to have_received(:new)
       end
 
+      it 'rejects empty audio uploads without calling the service' do
+        Tempfile.create(['empty', '.mp3']) do |file|
+          post_transcription(audio: fixture_file_upload(file.path, 'audio/mpeg'))
+        end
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body['error']).to eq('No audio provided')
+        expect(Messages::WidgetAudioTranscriptionService).not_to have_received(:new)
+      end
+
       it 'returns the transcription when the service succeeds' do
         allow(transcription_service).to receive(:perform).and_return({ success: true, transcription: 'Hello world' })
 
